@@ -15,7 +15,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationDidFinishLaunching(_ application: UIApplication) {
         let appConfiguration = AppConfiguration.randomElement()
         NetworkService.request(for: appConfiguration)
-        
+    }
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         MainCoordinator.shared.start()
         window = UIWindow(frame: UIScreen.main.bounds)
@@ -25,9 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         navBarAppearance.configureWithOpaqueBackground()
         UINavigationBar.appearance().standardAppearance = navBarAppearance
         UINavigationBar.appearance().scrollEdgeAppearance = navBarAppearance
+//        UserJson.request()
         return true
     }
 
-    }
 }
 

@@ -28,6 +28,9 @@
 		6E924B0728760C880071F8B2 /* PassGuessing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E924B0628760C870071F8B2 /* PassGuessing.swift */; };
 		6E924B09287DF9260071F8B2 /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E924B08287DF9260071F8B2 /* NetworkService.swift */; };
 		6E924B0B287DF9B90071F8B2 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E924B0A287DF9B90071F8B2 /* AppConfiguration.swift */; };
+		6E924B0D2883244F0071F8B2 /* Planet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E924B0C2883244E0071F8B2 /* Planet.swift */; };
+		6E924B0F2883555E0071F8B2 /* UserUrl1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E924B0E2883555E0071F8B2 /* UserUrl1.swift */; };
+		6E924B11288496A00071F8B2 /* Resident.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E924B102884969F0071F8B2 /* Resident.swift */; };
 		6E9D02C2283D7D59000F6E91 /* StorageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E9D02C1283D7D59000F6E91 /* StorageServiceTests.swift */; };
 		6E9D02C4283D7D59000F6E91 /* StorageService.h in Headers */ = {isa = PBXBuildFile; fileRef = 6E9D02B4283D7D59000F6E91 /* StorageService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		6E9D02C7283D7D59000F6E91 /* StorageService.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E9D02B2283D7D59000F6E91 /* StorageService.framework */; };
@@ -120,6 +123,9 @@
 		6E924B0628760C870071F8B2 /* PassGuessing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PassGuessing.swift; sourceTree = "<group>"; };
 		6E924B08287DF9260071F8B2 /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		6E924B0A287DF9B90071F8B2 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
+		6E924B0C2883244E0071F8B2 /* Planet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Planet.swift; sourceTree = "<group>"; };
+		6E924B0E2883555E0071F8B2 /* UserUrl1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserUrl1.swift; sourceTree = "<group>"; };
+		6E924B102884969F0071F8B2 /* Resident.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Resident.swift; sourceTree = "<group>"; };
 		6E9D02B2283D7D59000F6E91 /* StorageService.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = StorageService.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E9D02B4283D7D59000F6E91 /* StorageService.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StorageService.h; sourceTree = "<group>"; };
 		6E9D02B5283D7D59000F6E91 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -331,6 +337,9 @@
 				6EAEEE4F2860F7EB00B06A3D /* CheckModel.swift */,
 				6E924B00286B8FF70071F8B2 /* FeedModel.swift */,
 				6E924B0628760C870071F8B2 /* PassGuessing.swift */,
+				6E924B0C2883244E0071F8B2 /* Planet.swift */,
+				6E924B0E2883555E0071F8B2 /* UserUrl1.swift */,
+				6E924B102884969F0071F8B2 /* Resident.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -612,14 +621,17 @@
 				6EFC728027F041E1006C3DED /* ProfilePhotoCollectionViewCell.swift in Sources */,
 				6E030B0B27CBFCFC004609EE /* MainTabBarController.swift in Sources */,
 				6E9D02DD28469A16000F6E91 /* User.swift in Sources */,
+				6E924B0D2883244F0071F8B2 /* Planet.swift in Sources */,
 				6E924B01286B8FF70071F8B2 /* FeedModel.swift in Sources */,
 				6EFC728227F047E6006C3DED /* Photo.swift in Sources */,
+				6E924B0F2883555E0071F8B2 /* UserUrl1.swift in Sources */,
 				6E161DA62864EE99008591E8 /* ProfileCoordinator.swift in Sources */,
 				6E924B0B287DF9B90071F8B2 /* AppConfiguration.swift in Sources */,
 				6EFC727A27EEE923006C3DED /* UIViewExtension.swift in Sources */,
 				6EFB23E327E6EC0500FF8797 /* LogInViewController.swift in Sources */,
 				6EAEEE502860F7EB00B06A3D /* CheckModel.swift in Sources */,
 				6EAEEE4B2856DA9B00B06A3D /* MyLoginFactory.swift in Sources */,
+				6E924B11288496A00071F8B2 /* Resident.swift in Sources */,
 				6E1852FF27DDE65900A8EA39 /* ProfileViewController.swift in Sources */,
 				6E161DA42864EC15008591E8 /* MainCoordinator.swift in Sources */,
 				6E030B0727CBFCFC004609EE /* AppDelegate.swift in Sources */,
