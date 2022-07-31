@@ -6,18 +6,20 @@
 //
 
 import UIKit
+import Firebase
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var coordinator: MainCoordinator?
     
     var window: UIWindow?
-    func applicationDidFinishLaunching(_ application: UIApplication) {
-        let appConfiguration = AppConfiguration.randomElement()
-        NetworkService.request(for: appConfiguration)
-    }
+//    func applicationDidFinishLaunching(_ application: UIApplication) {
+//        let appConfiguration = AppConfiguration.randomElement()
+//        NetworkService.request(for: appConfiguration)
+//    }
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        FirebaseApp.configure()
         MainCoordinator.shared.start()
         window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = MainCoordinator.shared.navigationController
@@ -30,5 +32,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func applicationWillTerminate(_ application: UIApplication) {
+        do {
+            try Firebase.Auth.auth().signOut()
+        } catch {
+            print("Произошла ошибка")
+        }
+    }
 }
 

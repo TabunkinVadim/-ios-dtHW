@@ -31,11 +31,9 @@ class ProfileViewController: UIViewController {
         return $0
     }(UITableView(frame: .zero, style: .grouped))
     
-    var userLogin: UserService
     var user: User
 
     init (user: UserService, name: String) {
-        userLogin = user
         self.user = user.setUser(fullName: name) ?? User(fullName: "", avatar: UIImage(), status: "")
         
         super.init(nibName: nil, bundle: nil)
