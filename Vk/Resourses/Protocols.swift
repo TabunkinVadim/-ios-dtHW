@@ -11,7 +11,8 @@ protocol UserService {
     func setUser(fullName:String) -> User?
 }
 protocol LoginViewControllerDelegate: AnyObject {
-    func chek(login: String, pswd: String) -> Bool
+    func chek(login: String, pswd: String, completion: @escaping (AuthResult) -> Void)
+    func signUp(login: String, pswd: String, completion: @escaping (AuthResult) -> Void)
     }
 protocol LoginFactory{
     func getLoginChek() -> LoginInspector
