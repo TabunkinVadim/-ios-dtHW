@@ -7,8 +7,10 @@
 
 import UIKit
 import StorageService
-
-class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    func close ()
+}
+class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 
     weak var coordinator: ProfileCoordinator?
     
@@ -19,11 +21,11 @@ class ProfileViewController: UIViewController {
         $0.dataSource = self
         $0.delegate = self
         
-        #if DEBUG
+#if DEBUG
         $0.backgroundColor = .red
-        #else
+#else
         $0.backgroundColor = .systemGray6
-        #endif
+#endif
         
         $0.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: ProfileHeaderView.identifier)
         $0.register(PhotosTableViewCell.self, forCellReuseIdentifier: PhotosTableViewCell.identifier)
@@ -43,8 +45,23 @@ class ProfileViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func close() {
+        let alert = UIAlertController(title: "Выход", message: "Вы уверенны?", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "да", style: .destructive) { _ in
+            UserDefaults.standard.set(false, forKey: "isLogin")
+            self.dismiss(animated: true)
+            self.coordinator?.logInVC()
+        }
+        alert.addAction(ok)
+        let cancel = UIAlertAction(title: "нет", style: .cancel) { _ in
+        }
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        header.delegateClose = self
         layout()
     }
     
@@ -61,9 +78,7 @@ class ProfileViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
-        
     }
-    
 }
 
 extension ProfileViewController : UITableViewDelegate, UITableViewDataSource {

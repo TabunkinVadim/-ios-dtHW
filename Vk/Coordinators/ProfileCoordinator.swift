@@ -7,7 +7,7 @@
 
 import Foundation
 import UIKit
-
+import RealmSwift
 import Firebase
 
 final class ProfileCoordinator: Coordinator{
@@ -15,6 +15,7 @@ final class ProfileCoordinator: Coordinator{
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     let loginCheker: LoginInspector
+//    let results: Results<AuthorizationRealmModel>
 
     init(navigationController: UINavigationController, loginCheker: LoginInspector) {
         self.navigationController = navigationController
@@ -22,7 +23,13 @@ final class ProfileCoordinator: Coordinator{
     }
 
     func start() {
-        if Firebase.Auth.auth().currentUser != nil {
+//        let realm = try! Realm()
+//        if results.count != 0 {
+//
+//        }
+//        if Firebase.Auth.auth().currentUser != nil {
+
+        if UserDefaults.standard.bool(forKey: "isLogin") {
 #if DEBUG
         self.profileVC(user: TestUserService(), name: "Пётр")
 #else
@@ -78,10 +85,9 @@ final class ProfileCoordinator: Coordinator{
         }(UIAlertController())
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: cancelAction))
         navigationController.present(alert, animated: true)
-
+    }
         func didfinish() {
             parentCoordinator?.childDidFinish(self)
         }
 
-    }
 }
