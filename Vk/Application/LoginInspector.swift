@@ -20,9 +20,7 @@ class LoginInspector: LoginViewControllerDelegate {
             case .failure(let error):
                 completion(.failure(error))
             }
-
         }
-
     }
 
     func signUp(login: String, pswd: String, completion: @escaping (AuthResult) -> Void) {

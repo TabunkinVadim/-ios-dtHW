@@ -15,12 +15,12 @@ class LogInViewController: UIViewController {
     weak var coordinator: ProfileCoordinator?
     weak var delegate: LoginViewControllerDelegate?
     weak var delegateChecker: CheckerServiceProtocol?
-    private let realmCoordinator = RealmCoordinator()
 
     private var isCheck = false
     private var loginCheck = ""
     private var passwordCheck = ""
 
+    private let realmCoordinator = RealmCoordinator()
     private let contentView: UIView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
@@ -103,12 +103,7 @@ class LogInViewController: UIViewController {
     private let loginCheker: LoginInspector
 
     private lazy var delBottom = CustomButton(title: "удалить", color: .red, colorTitle: .white, borderWith: 1, cornerRadius: 10) {
-        let realm = try! Realm()
-        var items: Results<AuthorizationRealmModel>!
-        items = realm.objects(AuthorizationRealmModel.self)
-        try! realm.write {
-            realm.delete(items)
-        }
+        self.realmCoordinator.delete()
         self.setButtomLogin()
     }
 
@@ -118,43 +113,27 @@ class LogInViewController: UIViewController {
             self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
             return
         }
-        let realm = try! Realm()
-        var items: Results<AuthorizationRealmModel>?
-        items = realm.objects(AuthorizationRealmModel.self)
-        guard let items = items else {
-            return
-        }
-        if items.count != 0 {
-            let item = items[0]
+        if self.realmCoordinator.getCount() != 0 {
+            guard let item = self.realmCoordinator.get() else {return}
             if item.password == password, item.email == email {
-                UserDefaults.standard.set(true, forKey: "isLogin")
+                self.realmCoordinator.edit(item: item, isLogIn: true)
                 self.openProfile()
             } else {
-                let alert = UIAlertController(title: "Не верный ввод", message: "Повторите", preferredStyle: .alert)
-                let ok = UIAlertAction(title: "Хорошо", style: .cancel) { _ in
+                self.showAlert(title: "Не верный ввод", massege: "Повторите") { _ in
                     self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
                     self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
                     self.loginSet.text = ""
                     self.passwordSet.text = ""
                     self.setButtomLogin()
                 }
-                alert.addAction(ok)
-                self.present(alert, animated: true, completion: nil)
             }
         } else {
             if self.isCheck {
                 if self.passwordCheck == password, self.loginCheck == email {
-                    let accaunt = AuthorizationRealmModel()
-                    accaunt.email = email
-                    accaunt.password = password
-                    try! realm.write({
-                        realm.add(accaunt)
-                        UserDefaults.standard.set(true, forKey: "isLogin")
-                        self.openProfile()
-                    })
+                    self.realmCoordinator.create(password: password, email: email)
+                    self.openProfile()
                 } else {
-                    let alert = UIAlertController(title: "Не верный ввод", message: "Повторите", preferredStyle: .alert)
-                    let ok = UIAlertAction(title: "Хорошо", style: .cancel) { _ in
+                    self.showAlert(title: "Не верный ввод", massege: "Повторите") { _ in
                         self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
                         self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
                         self.passwordCheck = ""
@@ -164,8 +143,6 @@ class LogInViewController: UIViewController {
                         self.isCheck = false
                         self.setButtomLogin()
                     }
-                    alert.addAction(ok)
-                    self.present(alert, animated: true, completion: nil)
                 }
             } else {
                 self.loginCheck = email
@@ -179,6 +156,13 @@ class LogInViewController: UIViewController {
             }
 
         }
+    }
+
+    private func showAlert (title: String, massege: String, action:@escaping (UIAlertAction)-> Void) {
+        let alert = UIAlertController(title: title, message: massege, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "Хорошо", style: .cancel, handler: action)
+        alert.addAction(ok)
+        self.present(alert, animated: true, completion: nil)
     }
 
     private func openProfile() {

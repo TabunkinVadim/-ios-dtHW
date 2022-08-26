@@ -7,6 +7,8 @@
 
 import UIKit
 import StorageService
+import RealmSwift
+
 protocol ProfileViewControllerProtocol: AnyObject {
     func close ()
 }
@@ -48,7 +50,9 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
     func close() {
         let alert = UIAlertController(title: "Выход", message: "Вы уверенны?", preferredStyle: .alert)
         let ok = UIAlertAction(title: "да", style: .destructive) { _ in
-            UserDefaults.standard.set(false, forKey: "isLogin")
+            let realmCoordinator = RealmCoordinator()
+            guard let item = realmCoordinator.get() else {return}
+            realmCoordinator.edit(item: item, isLogIn: false)
             self.dismiss(animated: true)
             self.coordinator?.logInVC()
         }

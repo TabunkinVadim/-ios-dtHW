@@ -11,13 +11,5 @@ import RealmSwift
 final class AuthorizationRealmModel: Object {
     @objc dynamic var email: String = ""
     @objc dynamic var password: String = ""
-//    @objc dynamic var logIn : Bool = false
-
-
-//    convenience init(login: String, password: String) {
-//        self.init()
-//        self.logIn = login
-//        self.password = password
-//    }
-
+    @objc dynamic var logIn : Bool = false
 }

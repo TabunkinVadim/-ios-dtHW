@@ -15,7 +15,6 @@ final class ProfileCoordinator: Coordinator{
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     let loginCheker: LoginInspector
-//    let results: Results<AuthorizationRealmModel>
 
     init(navigationController: UINavigationController, loginCheker: LoginInspector) {
         self.navigationController = navigationController
@@ -23,13 +22,11 @@ final class ProfileCoordinator: Coordinator{
     }
 
     func start() {
-//        let realm = try! Realm()
-//        if results.count != 0 {
-//
-//        }
-//        if Firebase.Auth.auth().currentUser != nil {
+        guard let item = RealmCoordinator().get() else {
+            logInVC()
+            return}
 
-        if UserDefaults.standard.bool(forKey: "isLogin") {
+        if item.logIn{
 #if DEBUG
         self.profileVC(user: TestUserService(), name: "Пётр")
 #else
