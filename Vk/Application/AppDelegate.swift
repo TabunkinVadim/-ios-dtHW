@@ -12,7 +12,8 @@ import RealmSwift
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var coordinator: MainCoordinator?
-    
+
+
     var window: UIWindow?
 //    func applicationDidFinishLaunching(_ application: UIApplication) {
 //        let appConfiguration = AppConfiguration.randomElement()
@@ -41,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             print("Произошла ошибка")
         }
     }
+
 
     func migration() {
         let config = Realm.Configuration(

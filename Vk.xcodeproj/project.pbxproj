@@ -27,6 +27,12 @@
 		6E514B3F28B6C5E8008F9E89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E5499F3288FCC97002C43F3 /* GoogleService-Info.plist */; };
 		6E514B4028B6C5E9008F9E89 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6E5499F3288FCC97002C43F3 /* GoogleService-Info.plist */; };
 		6E514B4228B953F7008F9E89 /* RealmCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B4128B953F7008F9E89 /* RealmCoordinator.swift */; };
+		6E514B4428BB38E4008F9E89 /* FavoritePostsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B4328BB38E4008F9E89 /* FavoritePostsCoordinator.swift */; };
+		6E514B4628BB3956008F9E89 /* FavoritePostsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B4528BB3956008F9E89 /* FavoritePostsController.swift */; };
+		6E514B4928BB45E0008F9E89 /* CoreData.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B4728BB45E0008F9E89 /* CoreData.xcdatamodeld */; };
+		6E514B4B28BB4B31008F9E89 /* CoreDataCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B4A28BB4B31008F9E89 /* CoreDataCoordinator.swift */; };
+		6E514B5628BB921E008F9E89 /* FavoritePostModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B5428BB921E008F9E89 /* FavoritePostModel+CoreDataClass.swift */; };
+		6E514B5728BB921E008F9E89 /* FavoritePostModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E514B5528BB921E008F9E89 /* FavoritePostModel+CoreDataProperties.swift */; };
 		6E5499F8288FD43E002C43F3 /* CheckerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E5499F7288FD43E002C43F3 /* CheckerService.swift */; };
 		6E589D27284FC65F00AE3E00 /* LoginInspector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E589D26284FC65F00AE3E00 /* LoginInspector.swift */; };
 		6E5F1F2B28AAD1AC003F9EE7 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = 6E5F1F2A28AAD1AC003F9EE7 /* Realm */; };
@@ -127,6 +133,12 @@
 		6E1852FE27DDE65900A8EA39 /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		6E18530327DDE66B00A8EA39 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; usesTabs = 0; };
 		6E514B4128B953F7008F9E89 /* RealmCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RealmCoordinator.swift; sourceTree = "<group>"; };
+		6E514B4328BB38E4008F9E89 /* FavoritePostsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePostsCoordinator.swift; sourceTree = "<group>"; };
+		6E514B4528BB3956008F9E89 /* FavoritePostsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritePostsController.swift; sourceTree = "<group>"; };
+		6E514B4828BB45E0008F9E89 /* FavoritePostModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FavoritePostModel.xcdatamodel; sourceTree = "<group>"; };
+		6E514B4A28BB4B31008F9E89 /* CoreDataCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoreDataCoordinator.swift; sourceTree = "<group>"; };
+		6E514B5428BB921E008F9E89 /* FavoritePostModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoritePostModel+CoreDataClass.swift"; path = "Vk/FavoritePostModel+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
+		6E514B5528BB921E008F9E89 /* FavoritePostModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "FavoritePostModel+CoreDataProperties.swift"; path = "Vk/FavoritePostModel+CoreDataProperties.swift"; sourceTree = SOURCE_ROOT; };
 		6E5499F3288FCC97002C43F3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		6E5499F7288FD43E002C43F3 /* CheckerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckerService.swift; sourceTree = "<group>"; };
 		6E589D26284FC65F00AE3E00 /* LoginInspector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginInspector.swift; sourceTree = "<group>"; };
@@ -250,12 +262,13 @@
 			isa = PBXGroup;
 			children = (
 				6E030B0A27CBFCFC004609EE /* MainTabBarController.swift */,
-				6E1852FC27DDE65900A8EA39 /* PostViewController.swift */,
-				6E1852FE27DDE65900A8EA39 /* InfoViewController.swift */,
-				6E1852FD27DDE65900A8EA39 /* FeedViewController.swift */,
 				6EFB23E227E6EC0500FF8797 /* LogInViewController.swift */,
 				6E1852FB27DDE65900A8EA39 /* ProfileViewController.swift */,
+				6E1852FD27DDE65900A8EA39 /* FeedViewController.swift */,
+				6E514B4528BB3956008F9E89 /* FavoritePostsController.swift */,
 				6EFC728327F99311006C3DED /* PhotosViewController.swift */,
+				6E1852FC27DDE65900A8EA39 /* PostViewController.swift */,
+				6E1852FE27DDE65900A8EA39 /* InfoViewController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -298,7 +311,9 @@
 				6E161DA32864EC15008591E8 /* MainCoordinator.swift */,
 				6E161DA52864EE99008591E8 /* ProfileCoordinator.swift */,
 				6E161DA7286646CD008591E8 /* FeedCoordinator.swift */,
+				6E514B4328BB38E4008F9E89 /* FavoritePostsCoordinator.swift */,
 				6E514B4128B953F7008F9E89 /* RealmCoordinator.swift */,
+				6E514B4A28BB4B31008F9E89 /* CoreDataCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -358,6 +373,9 @@
 				6E924B0E2883555E0071F8B2 /* UserUrl1.swift */,
 				6E924B102884969F0071F8B2 /* Resident.swift */,
 				6E5F1F2E28AAD55C003F9EE7 /* AuthorizationRealmModel.swift */,
+				6E514B5428BB921E008F9E89 /* FavoritePostModel+CoreDataClass.swift */,
+				6E514B5528BB921E008F9E89 /* FavoritePostModel+CoreDataProperties.swift */,
+				6E514B4728BB45E0008F9E89 /* CoreData.xcdatamodeld */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -645,6 +663,8 @@
 				6EFC728427F99311006C3DED /* PhotosViewController.swift in Sources */,
 				6EFC728027F041E1006C3DED /* ProfilePhotoCollectionViewCell.swift in Sources */,
 				6E030B0B27CBFCFC004609EE /* MainTabBarController.swift in Sources */,
+				6E514B4B28BB4B31008F9E89 /* CoreDataCoordinator.swift in Sources */,
+				6E514B4428BB38E4008F9E89 /* FavoritePostsCoordinator.swift in Sources */,
 				6E9D02DD28469A16000F6E91 /* User.swift in Sources */,
 				6E924B0D2883244F0071F8B2 /* Planet.swift in Sources */,
 				6E924B01286B8FF70071F8B2 /* FeedModel.swift in Sources */,
@@ -655,6 +675,7 @@
 				6E5499F8288FD43E002C43F3 /* CheckerService.swift in Sources */,
 				6EFC727A27EEE923006C3DED /* UIViewExtension.swift in Sources */,
 				6EFB23E327E6EC0500FF8797 /* LogInViewController.swift in Sources */,
+				6E514B5728BB921E008F9E89 /* FavoritePostModel+CoreDataProperties.swift in Sources */,
 				6EAEEE502860F7EB00B06A3D /* CheckModel.swift in Sources */,
 				6EAEEE4B2856DA9B00B06A3D /* MyLoginFactory.swift in Sources */,
 				6E924B11288496A00071F8B2 /* Resident.swift in Sources */,
@@ -666,6 +687,7 @@
 				6E9D02E6284C98C0000F6E91 /* TestUserService.swift in Sources */,
 				6EFC727C27EF5249006C3DED /* ConstrantsPostTableViewCell.swift in Sources */,
 				6E030B3827DDE266004609EE /* ProfileHeaderView.swift in Sources */,
+				6E514B4628BB3956008F9E89 /* FavoritePostsController.swift in Sources */,
 				6E161DAA2868A39C008591E8 /* Coordinator.swift in Sources */,
 				6EAEEE4D285A5B0300B06A3D /* CustomButton.swift in Sources */,
 				6E924B0728760C880071F8B2 /* PassGuessing.swift in Sources */,
@@ -673,9 +695,11 @@
 				6EFC727827EB99CF006C3DED /* PostTableViewCell.swift in Sources */,
 				6E18530227DDE65900A8EA39 /* InfoViewController.swift in Sources */,
 				6E9D02E028469B91000F6E91 /* Protocols.swift in Sources */,
+				6E514B5628BB921E008F9E89 /* FavoritePostModel+CoreDataClass.swift in Sources */,
 				6E924B09287DF9260071F8B2 /* NetworkService.swift in Sources */,
 				6E161DA8286646CD008591E8 /* FeedCoordinator.swift in Sources */,
 				6E18530127DDE65900A8EA39 /* FeedViewController.swift in Sources */,
+				6E514B4928BB45E0008F9E89 /* CoreData.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1066,6 +1090,19 @@
 			productName = iOSIntPackage;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		6E514B4728BB45E0008F9E89 /* CoreData.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				6E514B4828BB45E0008F9E89 /* FavoritePostModel.xcdatamodel */,
+			);
+			currentVersion = 6E514B4828BB45E0008F9E89 /* FavoritePostModel.xcdatamodel */;
+			path = CoreData.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 6E030AFB27CBFCFC004609EE /* Project object */;
 }

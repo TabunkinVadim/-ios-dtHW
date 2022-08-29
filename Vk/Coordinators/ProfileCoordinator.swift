@@ -28,9 +28,9 @@ final class ProfileCoordinator: Coordinator{
 
         if item.logIn{
 #if DEBUG
-        self.profileVC(user: TestUserService(), name: "Пётр")
+            self.profileVC(user: TestUserService(), name: "Пётр")
 #else
-        self.profileVC(user: CurrentUserService(), name: "Иван" )
+            self.profileVC(user: CurrentUserService(), name: "Иван" )
 #endif
         } else {
             logInVC()
@@ -83,8 +83,9 @@ final class ProfileCoordinator: Coordinator{
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: cancelAction))
         navigationController.present(alert, animated: true)
     }
-        func didfinish() {
-            parentCoordinator?.childDidFinish(self)
-        }
+    
+    func didfinish() {
+        parentCoordinator?.childDidFinish(self)
+    }
 
 }

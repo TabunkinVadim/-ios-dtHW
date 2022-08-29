@@ -8,14 +8,16 @@
 import UIKit
 import StorageService
 import RealmSwift
+import SwiftUI
 
 protocol ProfileViewControllerProtocol: AnyObject {
     func close ()
 }
 class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 
+    private var coreDataCoordinator = CoreDataCoordinator()
     weak var coordinator: ProfileCoordinator?
-    
+    private var index: Int = 0
     var header: ProfileHeaderView = ProfileHeaderView(reuseIdentifier: ProfileHeaderView.identifier)
 
     private lazy var tableView: UITableView = {
@@ -39,7 +41,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 
     init (user: UserService, name: String) {
         self.user = user.setUser(fullName: name) ?? User(fullName: "", avatar: UIImage(), status: "")
-        
+
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -61,6 +63,7 @@ class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
         }
         alert.addAction(cancel)
         self.present(alert, animated: true, completion: nil)
+
     }
 
     override func viewDidLoad() {
@@ -106,6 +109,10 @@ extension ProfileViewController : UITableViewDelegate, UITableViewDataSource {
             var cell: PostTableViewCell
             cell = (tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier , for: indexPath) as! PostTableViewCell)
             cell.setupCell(model: posts[indexPath.row], set: indexPath.row)
+            cell.index = indexPath.row
+            let tap = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
+            tap.numberOfTapsRequired = 2
+            cell.addGestureRecognizer(tap)
             return cell
         }
     }
@@ -130,16 +137,29 @@ extension ProfileViewController : UITableViewDelegate, UITableViewDataSource {
             return 0
         }
     }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var autiHeight:CGFloat {
             UITableView.automaticDimension
         }
         return autiHeight
     }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0{
             coordinator?.photoVC()
+        } else {
+            index = indexPath.row
         }
+    }
+
+    @objc private func doubleTapped() {
+
+        coreDataCoordinator.sevePost(post: posts[index])
+        NotificationCenter.default.post(name: NSNotification.Name.reloadFavoritPost, object: nil)
     }
 }
 
+public extension NSNotification.Name {
+    static let reloadFavoritPost = NSNotification.Name("reloadFavoritPost")
+}

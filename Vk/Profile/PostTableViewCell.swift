@@ -11,7 +11,7 @@ import iOSIntPackage
 import StorageService
 
 class PostTableViewCell: UITableViewCell {
-
+    var index: Int = 0
     let postCell: UIView = {
         $0.toAutoLayout()
         $0.backgroundColor = .white
@@ -56,7 +56,9 @@ class PostTableViewCell: UITableViewCell {
     } (UILabel())
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+//        self.index = index
         super .init(style: style, reuseIdentifier: reuseIdentifier)
+//        self.index = index
         layout()
     }
 
