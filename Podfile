@@ -20,6 +20,8 @@ target 'Vk' do
 
   # Pods for Vk
   pod 'SnapKit'
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
 
 end
 

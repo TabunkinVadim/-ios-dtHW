@@ -13,7 +13,6 @@ public final class FeedCoordinator: Coordinator{
     var childCoordinators = [Coordinator]()
     var navigationController: UINavigationController
     let checkModel: CheckModel
-
     
     init(navigationController: UINavigationController, checkModel: CheckModel) {
         self.navigationController = navigationController
@@ -46,5 +45,4 @@ public final class FeedCoordinator: Coordinator{
     func pop (){
         navigationController.popViewController(animated: true)
     }
-
 }

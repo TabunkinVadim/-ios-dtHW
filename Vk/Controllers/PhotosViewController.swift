@@ -33,33 +33,7 @@ class PhotosViewController: UIViewController {
         threadImages()
         layout()
     }
-
-    /* Измерения времени срабатывания метода processImagesOnThread с параметром:
-     qos: .default
-     Измерение 1: 6.113 сек.
-     Измерение 2: 5.367 сек.
-     Измерение 3: 5.182 сек.
-
-     qos: .background
-     Измерение 1: 5.020 сек.
-     Измерение 2: 5.008 сек.
-     Измерение 3: 5.032 сек.
-
-     qos: .userInitiated
-     Измерение 1: 4.911 сек.
-     Измерение 2: 5.736 сек.
-     Измерение 3: 5.728 сек.
-
-     qos: .userInteractive
-     Измерение 1: 5.528 сек.
-     Измерение 2: 5.121 сек.
-     Измерение 3: 5.386 сек.
-
-     qos: .utility
-     Измерение 1: 5.446 сек.
-     Измерение 2: 10.947 сек.
-     Измерение 3: 5.973 сек.
-     */
+    
     func threadImages() {
         let startTime = Date()
         ImageProcessor().processImagesOnThread(sourceImages: photoGallery2, filter: .chrome, qos: .utility) { imageThread in

@@ -5,13 +5,22 @@
 //  Created by Табункин Вадим on 20.03.2022.
 //
 
-import UIKit 
+import UIKit
+import Firebase
+import RealmSwift
+
 
 class LogInViewController: UIViewController {
-    weak var coordinator: ProfileCoordinator?
-    
-    weak var delegate: LoginViewControllerDelegate?
 
+    weak var coordinator: ProfileCoordinator?
+    weak var delegate: LoginViewControllerDelegate?
+    weak var delegateChecker: CheckerServiceProtocol?
+
+    private var isCheck = false
+    private var loginCheck = ""
+    private var passwordCheck = ""
+
+    private let realmCoordinator = RealmCoordinator()
     private let contentView: UIView = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         return $0
@@ -46,9 +55,22 @@ class LogInViewController: UIViewController {
         $0.placeholder = "Email of phone"
         $0.delegate = self
         $0.addTarget(self, action: #selector(loginsSeting(_:)), for: .editingChanged)
+        $0.addTarget(self, action: #selector(buttonActivate(_:)), for: .editingChanged)
         return $0
     }(UITextField())
-    
+
+    @objc private func buttonActivate(_ textField: UITextField){
+        if self.loginSet.hasText && self.passwordSet.hasText{
+            loginButtom?.backgroundColor = UIColor(named: "MainColor") ?? .blue
+            loginButtom?.setTitleColor(.white, for: .normal)
+            loginButtom?.layer.borderWidth = 0
+        } else {
+            loginButtom?.backgroundColor = .white
+            loginButtom?.setTitleColor(UIColor(named: "MainColor") ?? .blue, for: .normal)
+            loginButtom?.layer.borderWidth = 1
+        }
+    }
+
     private lazy var passwordSet: UITextField = {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 15, height: $0.frame.height))
@@ -68,73 +90,89 @@ class LogInViewController: UIViewController {
         $0.delegate = self
         $0.isSecureTextEntry = true
         $0.addTarget(self, action: #selector(passwordSeting), for: .editingChanged)
+        $0.addTarget(self, action: #selector(buttonActivate(_:)), for: .editingChanged)
         return $0
     }(UITextField())
 
-    private lazy var loginButtom = CustomButton(title: "Login", color: UIColor(named: "MainColor") ?? .blue, colorTitle: .white, borderWith: 0, cornerRadius: 10) {
-        self.delegate = self.loginCheker
-        if let bool = self.delegate?.chek(login: self.loginSet.text ?? "", pswd: self.passwordSet.text ?? "") {
-            #if DEBUG
-            if bool{
-                self.coordinator?.profileVC(user: TestUserService(), name: self.loginSet.text ?? "")
-            }else {
-                self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
-                self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
-                self.loginSet.textColor = .red
-                self.passwordSet.textColor = .red
-            }
-            #else
-            if bool{
-                self.coordinator?.profileVC(user: CurrentUserService(), name: self.loginSet.text ?? "")
-            }else {
-                self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
-                self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
-                self.loginSet.textColor = .red
-                self.passwordSet.textColor = .red
-            }
-            #endif
-        }
+    enum AuthResult {
+        case success
+        case failure(Error)
     }
-    private lazy var guessingButtom = CustomButton(title: "bruteForce", color: UIColor(named: "MainColor") ?? .blue, colorTitle: .white, borderWith: 0, cornerRadius: 10) {
-        var pass = ""{
-            didSet{
-                DispatchQueue.main.async{
-                    self.passwordSet.text = pass
-                    #if DEBUG
-                    self.loginSet.text = "Пётр"
-                    #else
-                    self.loginSet.text = "Иван"
-                    #endif
-                    self.passwordSet.isSecureTextEntry = false
-                    self.indicator.stopAnimating()
-                    self.indicator.hidesWhenStopped = true
+
+    private let checker = CheckerService()
+    private let loginCheker: LoginInspector
+
+    private lazy var delBottom = CustomButton(title: "удалить", color: .red, colorTitle: .white, borderWith: 1, cornerRadius: 10) {
+        self.realmCoordinator.delete()
+        self.setButtomLogin()
+    }
+
+    private lazy var loginButtom = CustomButton(title: "Login", color: .systemGray6, colorTitle: UIColor(named: "MainColor") ?? .blue , borderWith: 1, cornerRadius: 10) {
+        guard let email = self.loginSet.text, !email.isEmpty, let password = self.passwordSet.text, !password.isEmpty else {
+            self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
+            self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
+            return
+        }
+        if self.realmCoordinator.getCount() != 0 {
+            guard let item = self.realmCoordinator.get() else {return}
+            if item.password == password, item.email == email {
+                self.realmCoordinator.edit(item: item, isLogIn: true)
+                self.openProfile()
+            } else {
+                self.showAlert(title: "Не верный ввод", massege: "Повторите") { _ in
+                    self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                    self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                    self.loginSet.text = ""
+                    self.passwordSet.text = ""
+                    self.setButtomLogin()
                 }
             }
-        }
-        DispatchQueue.global().async {
-            let randomPass = Checker.shared.randomString(length: 4)
-            pass = PassGuessing().bruteForce(passwordToUnlock: randomPass)
-        }
+        } else {
+            if self.isCheck {
+                if self.passwordCheck == password, self.loginCheck == email {
+                    self.realmCoordinator.create(password: password, email: email)
+                    self.openProfile()
+                } else {
+                    self.showAlert(title: "Не верный ввод", massege: "Повторите") { _ in
+                        self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                        self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                        self.passwordCheck = ""
+                        self.loginCheck = ""
+                        self.loginSet.text = ""
+                        self.passwordSet.text = ""
+                        self.isCheck = false
+                        self.setButtomLogin()
+                    }
+                }
+            } else {
+                self.loginCheck = email
+                self.passwordCheck = password
+                self.loginSet.attributedPlaceholder = NSAttributedString.init(string: "Email of phone", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                self.passwordSet.attributedPlaceholder = NSAttributedString.init(string: "Password", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
+                self.loginSet.text = ""
+                self.passwordSet.text = ""
+                self.isCheck = true
+                self.setButtomLogin()
+            }
 
-        DispatchQueue.main.async{
-            self.passwordSet.addSubview(self.indicator)
-            NSLayoutConstraint.activate([
-                self.indicator.centerXAnchor.constraint(equalTo: self.passwordSet.centerXAnchor),
-                self.indicator.centerYAnchor.constraint(equalTo: self.passwordSet.centerYAnchor),
-                self.indicator.heightAnchor.constraint(equalToConstant: 40),
-                self.indicator.widthAnchor.constraint(equalToConstant: 40)
-            ])
-            self.indicator.startAnimating()
         }
     }
 
-    var indicator: UIActivityIndicatorView = {
-        $0.toAutoLayout()
-        $0.style = UIActivityIndicatorView.Style.medium
-        return $0
-    }(UIActivityIndicatorView())
+    private func showAlert (title: String, massege: String, action:@escaping (UIAlertAction)-> Void) {
+        let alert = UIAlertController(title: title, message: massege, preferredStyle: .alert)
+        let ok = UIAlertAction(title: "Хорошо", style: .cancel, handler: action)
+        alert.addAction(ok)
+        self.present(alert, animated: true, completion: nil)
+    }
 
-    private let loginCheker: LoginInspector
+    private func openProfile() {
+#if DEBUG
+        self.coordinator?.profileVC(user: TestUserService(), name: "Пётр")
+#else
+        self.coordinator?.profileVC(user: CurrentUserService(), name: "Иван" )
+#endif
+        self.dismiss(animated: true)
+    }
 
     init (loginCheker: LoginInspector){
         self.loginCheker = loginCheker
@@ -144,16 +182,32 @@ class LogInViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        setButtomLogin()
         layout()
     }
-    
+    private func setButtomLogin() {
+        if isCheck {
+            self.loginButtom?.setTitle("Повторите ввод", for: .normal)
+        } else{
+            let realm = try! Realm()
+            var items: Results<AuthorizationRealmModel>?
+            items = realm.objects(AuthorizationRealmModel.self)
+            guard let items = items else { return }
+            if items.count != 0 {
+                self.loginButtom?.setTitle("Вход", for: .normal)
+            } else {
+                self.loginButtom?.setTitle("Создать аккаунт", for: .normal)
+            }
+        }
+    }
+
     @objc func loginsSeting(_ textField: UITextField){
         loginSet.text = textField.text ?? ""
     }
-    
+
     @objc func passwordSeting (_ textField: UITextField){
         passwordSet.text = textField.text ?? ""
     }
@@ -181,7 +235,7 @@ class LogInViewController: UIViewController {
         ])
         loginButtom!.translatesAutoresizingMaskIntoConstraints = false
 
-        contentView.addSubviews(logo, loginSet, passwordSet, loginButtom!, guessingButtom!)
+        contentView.addSubviews(logo, loginSet, passwordSet, loginButtom!, delBottom!/*, guessingButtom!*/)
 
         NSLayoutConstraint.activate([
             logo.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 120),
@@ -208,16 +262,15 @@ class LogInViewController: UIViewController {
             loginButtom!.topAnchor.constraint(equalTo: passwordSet.bottomAnchor, constant: 16),
             loginButtom!.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             loginButtom!.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            loginButtom!.heightAnchor.constraint(equalToConstant: 50),
-//            loginButtom!.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 10)
+            loginButtom!.heightAnchor.constraint(equalToConstant: 50)
         ])
 
         NSLayoutConstraint.activate([
-            guessingButtom!.topAnchor.constraint(equalTo: loginButtom!.bottomAnchor, constant: 16),
-            guessingButtom!.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            guessingButtom!.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            guessingButtom!.heightAnchor.constraint(equalToConstant: 50),
-            guessingButtom!.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 10)
+            delBottom!.topAnchor.constraint(equalTo: loginButtom!.bottomAnchor, constant: 16),
+            delBottom!.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            delBottom!.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            delBottom!.heightAnchor.constraint(equalToConstant: 50),
+            delBottom!.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 10)
         ])
     }
 

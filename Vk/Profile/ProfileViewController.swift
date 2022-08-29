@@ -7,11 +7,17 @@
 
 import UIKit
 import StorageService
+import RealmSwift
+import SwiftUI
 
-class ProfileViewController: UIViewController {
+protocol ProfileViewControllerProtocol: AnyObject {
+    func close ()
+}
+class ProfileViewController: UIViewController, ProfileViewControllerProtocol {
 
+    private var coreDataCoordinator = CoreDataCoordinator()
     weak var coordinator: ProfileCoordinator?
-    
+    private var index: Int = 0
     var header: ProfileHeaderView = ProfileHeaderView(reuseIdentifier: ProfileHeaderView.identifier)
 
     private lazy var tableView: UITableView = {
@@ -19,11 +25,11 @@ class ProfileViewController: UIViewController {
         $0.dataSource = self
         $0.delegate = self
         
-        #if DEBUG
+#if DEBUG
         $0.backgroundColor = .red
-        #else
+#else
         $0.backgroundColor = .systemGray6
-        #endif
+#endif
         
         $0.register(ProfileHeaderView.self, forHeaderFooterViewReuseIdentifier: ProfileHeaderView.identifier)
         $0.register(PhotosTableViewCell.self, forCellReuseIdentifier: PhotosTableViewCell.identifier)
@@ -31,13 +37,11 @@ class ProfileViewController: UIViewController {
         return $0
     }(UITableView(frame: .zero, style: .grouped))
     
-    var userLogin: UserService
     var user: User
 
     init (user: UserService, name: String) {
-        userLogin = user
         self.user = user.setUser(fullName: name) ?? User(fullName: "", avatar: UIImage(), status: "")
-        
+
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -45,8 +49,26 @@ class ProfileViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    func close() {
+        let alert = UIAlertController(title: "Выход", message: "Вы уверенны?", preferredStyle: .alert)
+        let ok = UIAlertAction(title: "да", style: .destructive) { _ in
+            let realmCoordinator = RealmCoordinator()
+            guard let item = realmCoordinator.get() else {return}
+            realmCoordinator.edit(item: item, isLogIn: false)
+            self.dismiss(animated: true)
+            self.coordinator?.logInVC()
+        }
+        alert.addAction(ok)
+        let cancel = UIAlertAction(title: "нет", style: .cancel) { _ in
+        }
+        alert.addAction(cancel)
+        self.present(alert, animated: true, completion: nil)
+
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        header.delegateClose = self
         layout()
     }
     
@@ -63,9 +85,7 @@ class ProfileViewController: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             tableView.widthAnchor.constraint(equalTo: view.widthAnchor)
         ])
-        
     }
-    
 }
 
 extension ProfileViewController : UITableViewDelegate, UITableViewDataSource {
@@ -89,6 +109,10 @@ extension ProfileViewController : UITableViewDelegate, UITableViewDataSource {
             var cell: PostTableViewCell
             cell = (tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.identifier , for: indexPath) as! PostTableViewCell)
             cell.setupCell(model: posts[indexPath.row], set: indexPath.row)
+            cell.index = indexPath.row
+            let tap = UITapGestureRecognizer(target: self, action: #selector(doubleTapped))
+            tap.numberOfTapsRequired = 2
+            cell.addGestureRecognizer(tap)
             return cell
         }
     }
@@ -113,16 +137,29 @@ extension ProfileViewController : UITableViewDelegate, UITableViewDataSource {
             return 0
         }
     }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         var autiHeight:CGFloat {
             UITableView.automaticDimension
         }
         return autiHeight
     }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0{
             coordinator?.photoVC()
+        } else {
+            index = indexPath.row
         }
+    }
+
+    @objc private func doubleTapped() {
+
+        coreDataCoordinator.sevePost(post: posts[index])
+        NotificationCenter.default.post(name: NSNotification.Name.reloadFavoritPost, object: nil)
     }
 }
 
+public extension NSNotification.Name {
+    static let reloadFavoritPost = NSNotification.Name("reloadFavoritPost")
+}

@@ -9,6 +9,8 @@ import UIKit
 import SnapKit
 
 class ProfileHeaderView:UITableViewHeaderFooterView  {
+
+    weak var delegateClose:ProfileViewControllerProtocol?
     weak var coordinator: ProfileCoordinator?
     private var statusText: String = ""
     
@@ -39,10 +41,17 @@ class ProfileHeaderView:UITableViewHeaderFooterView  {
         return lable
     }()
 
+    private lazy var exitButtom = CustomButton(title: "Выйти", color: .white, colorTitle: .red, borderWith: 1, cornerRadius: 10) {
+        self.delegateClose?.close()
+
+
+    }
+
     private lazy var statusButtom = CustomButton(title: "Show status", color: .blue, colorTitle: .white, borderWith: 0, cornerRadius: 4) {
         self.coordinator?.photoVC()
         self.status.text = self.statusText
         print(self.status.text ?? "Статус отсутствует")
+
     }
     
     var status: UILabel = {
@@ -90,11 +99,18 @@ class ProfileHeaderView:UITableViewHeaderFooterView  {
     override func layoutSubviews() {
         super .layoutSubviews()
         
-        contentView.addSubviews(avatarView, name, statusButtom!, status, statusSet)
+        contentView.addSubviews(avatarView, exitButtom!, name, statusButtom!, status, statusSet)
         avatarView.snp.makeConstraints { maker in
             maker.top.equalToSuperview().inset(16)
             maker.leading.equalToSuperview().inset(16)
             maker.height.equalTo(100)
+            maker.width.equalTo(100)
+        }
+
+        exitButtom!.snp.makeConstraints { maker in
+            maker.top.equalToSuperview().inset(16)
+            maker.trailing.equalToSuperview().inset(16)
+            maker.height.equalTo(30)
             maker.width.equalTo(100)
         }
         

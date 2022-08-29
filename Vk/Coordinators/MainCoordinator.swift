@@ -42,6 +42,12 @@ final class MainCoordinator: Coordinator {
         child.start()
         return child
     }
+    func favorite(navigationController: UINavigationController) -> FavoritePostsCoordinator {
+        let child = FavoritePostsCoordinator(navigationController: navigationController)
+        childCoordinators.append(child)
+        child.start()
+        return child
+    }
 
     func childDidFinish(_ child:Coordinator?) {
         for (index, coordinator) in childCoordinators.enumerated() {
